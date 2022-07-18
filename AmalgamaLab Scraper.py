@@ -6,23 +6,7 @@ def main():
     print_program_banner()
     url = get_url()
     page_html = get_html(url)
-        
-    print("Scraping data...")
-
-    soup = bs4.BeautifulSoup( page_html, features = "html.parser" )
-    _title_original = soup.select_one('h2[class="original"]')
-    title_original = _title_original.get_text()
-
-    _title_translate = soup.select_one('h2[class="translate few"]')
-    title_translate = _title_translate.get_text()
-
-    title = ( title_original, title_translate )
-
-    _text = soup.select('#click_area')
-    soup = bs4.BeautifulSoup( str(_text), features = "html.parser" )
-    text=soup.select('.string_container')
-
-    print("Found:", title[0],r' / ', title[1] )
+    title, text = extract_data(page_html)
     print("Extracting data...")
 
     csv_file = open( title[0]+'.csv', 'w', newline = '' )
@@ -84,6 +68,21 @@ def get_html(url):
         print("Server response:", response.status )
         print("Check if URL is valid and try again!")
         main()
+            
+def extract_data(content):
+    print("Scraping data...")
+
+    soup = bs4.BeautifulSoup( content, features = "html.parser" )
+    title_original = soup.select_one('h2[class="original"]').get_text()
+
+    title_translate = soup.select_one('h2[class="translate few"]').get_text()
+
+    _text = str(soup.select('#click_area'))
+    soup = bs4.BeautifulSoup( _text, features = "html.parser" )
+    text = soup.select('.string_container')
+
+    print(f"Found: {title_original} / {title_translate} ")
+    return ( title_original, title_translate ), text
     
 if __name__ == '__main__':
     main()
