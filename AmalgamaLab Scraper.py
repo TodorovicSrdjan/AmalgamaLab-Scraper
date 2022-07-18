@@ -70,7 +70,7 @@ endpoint which is defind with regular expression
 :return: valid URL for a song
 '''
 def get_url():
-    regex = re.compile("^https://www.amalgama-lab.com/songs/[a-zA-Z0-9]/.+/.+\.html")
+    regex = re.compile(r"^(?:https?://)www.amalgama-lab.com/songs/[a-zA-Z0-9]/.+/.+\.html")
     
     # Loop until user enters valid url
     while True:
