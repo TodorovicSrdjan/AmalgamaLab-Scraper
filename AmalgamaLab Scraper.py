@@ -86,7 +86,7 @@ def save_to_csv(title, text):
             original = _string.select_one('div[class="original"]').get_text()
             translate = _string.select_one('div[class="translate"]').get_text()
             csv_writer.writerow( list( ( original, translate ) ) )
-    print(f"Data is successfuly exported to ''{title[0]}.csv'")
+    print(f"Data is successfuly exported to '{title[0]}.csv'")
     
 if __name__ == '__main__':
     main()
