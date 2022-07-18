@@ -74,8 +74,8 @@ def extract_data(content):
     rows = []
     
     for urow in unprocessed_rows:
-        original = urow.select_one('div[class="original"]').get_text()
-        translate = urow.select_one('div[class="translate"]').get_text()
+        original = urow.select_one('div[class="original"]').get_text().strip()
+        translate = urow.select_one('div[class="translate"]').get_text().strip()
         rows += [(original, translate)]
 
     print(f"Found: {title_original} / {title_translate} ")
