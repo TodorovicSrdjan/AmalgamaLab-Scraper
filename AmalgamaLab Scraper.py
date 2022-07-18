@@ -1,6 +1,9 @@
 import requests, bs4, time, csv, re, sys
 
+PROGRAM_NAME = "Amalgama-lab Scraper"
+
 def main():
+    print_program_banner()
     regex = re.compile("^https://www.amalgama-lab.com/songs/[a-zA-Z0-9]/.+/.+\.html")
     try:
         url = input("Enter the URL:\n")
@@ -64,10 +67,16 @@ def main():
     print("Done!")
     csv_file.close()
     sys.exit()
-
-program_name = "Amalgama-lab Scraper"
-l = len(program_name)
-print( "="*(l+4) ,"= "+program_name+" =", "="*(l+4), sep='\n' )
-sys.stderr = object
+    
+'''
+Prints out program banner
+'''
+def print_program_banner():
+    l = len(PROGRAM_NAME)
+    print( "="*(l+4), "= "+PROGRAM_NAME+" =", "="*(l+4), sep='\n' )
+    
+    # suppress error messages
+    #sys.stderr = object
+    
 if __name__ == '__main__':
     main()
