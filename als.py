@@ -6,8 +6,8 @@ def main():
     print_program_banner()
     url = get_url()
     page_html = get_html(url)
-    title, text = extract_data(page_html)
-    save_to_csv(title, text)
+    titles, rows = extract_data(page_html)
+    save_to_csv(titles, rows)
     
     print("Done!")
     sys.exit()
@@ -67,29 +67,29 @@ def extract_data(content):
 
     title_translate = soup.select_one('h2[class="translate few"]').get_text()
 
-    _text = str(soup.select('#click_area'))
-    soup = bs4.BeautifulSoup( _text, features = "html.parser" )
-    text = soup.select('.string_container')
+    table = str(soup.select('#click_area'))
+    table_soup = bs4.BeautifulSoup( table, features = "html.parser" )
+    unprocessed_rows = table_soup.select('.string_container')
     
     rows = []
     
-    for _string in text:
-        original = _string.select_one('div[class="original"]').get_text()
-        translate = _string.select_one('div[class="translate"]').get_text()
+    for urow in unprocessed_rows:
+        original = urow.select_one('div[class="original"]').get_text()
+        translate = urow.select_one('div[class="translate"]').get_text()
         rows += [(original, translate)]
 
     print(f"Found: {title_original} / {title_translate} ")
     return ( title_original, title_translate ), rows
 
-def save_to_csv(title, text):
+def save_to_csv(titles, rows):
     print("Exporting data...")
 
-    with open(title[0]+'.csv', 'w', newline = '') as csv_file:
+    with open(titles[0]+'.csv', 'w', newline = '') as csv_file:
         csv_writer = csv.writer( csv_file )
-        csv_writer.writerow( [ 'Original', 'Translate' ] )
-        csv_writer.writerow( list(title) )
-        csv_writer.writerows( text )
-    print(f"Data is successfuly exported to '{title[0]}.csv'")
+        csv_writer.writerow( [ 'Original', 'Translated' ] )
+        csv_writer.writerow( list(titles) )
+        csv_writer.writerows( rows )
+    print(f"Data is successfuly exported to '{titles[0]}.csv'")
     
 if __name__ == '__main__':
     main()
