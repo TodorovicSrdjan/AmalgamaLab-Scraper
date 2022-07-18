@@ -4,22 +4,7 @@ PROGRAM_NAME = "Amalgama-lab Scraper"
 
 def main():
     print_program_banner()
-    regex = re.compile("^https://www.amalgama-lab.com/songs/[a-zA-Z0-9]/.+/.+\.html")
-    try:
-        url = input("Enter the URL:\n")
-        result = regex.search( url )
-        if not result:
-            print("Error: Invalid input!")
-            raise Exception()
-        
-    except EOFError:
-        sys.exit("End of file occurred")
-    except KeyboardInterrupt:
-        sys.exit("Keyboard Interrupt occurred")
-    except:
-        main()
-        sys.exit()
-
+    url = get_url()
 
     print("Sending request...")
     try:
@@ -77,6 +62,25 @@ def print_program_banner():
     
     # suppress error messages
     #sys.stderr = object
+
+'''
+Promts user for URL until valid URL is passed. URL is considered valid if it matches right 
+endpoint which is defind with regular expression
+
+:return: valid URL for a song
+'''
+def get_url():
+    regex = re.compile("^https://www.amalgama-lab.com/songs/[a-zA-Z0-9]/.+/.+\.html")
+    
+    # Loop until user enters valid url
+    while True:
+        url = input("Enter the URL: ")
+        result = regex.search(url)
+        
+        if result:
+            return result.group(0)
+        else:
+            print("Error: Invalid input!")
     
 if __name__ == '__main__':
     main()
