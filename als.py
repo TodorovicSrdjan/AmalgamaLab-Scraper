@@ -10,6 +10,7 @@ def main():
     save_to_csv(titles, rows)
     
     print("Done!")
+    
     sys.exit()
     
 '''
@@ -49,6 +50,7 @@ def get_html(url):
     http = urllib3.PoolManager(
         ssl_version=ssl.PROTOCOL_TLS,
         ssl_context=ctx)
+    
     response = http.request("GET", url)
     
     if response.status == 200:
@@ -63,8 +65,8 @@ def extract_data(content):
     print("Scraping data...")
 
     soup = bs4.BeautifulSoup( content, features = "html.parser" )
+    
     title_original = soup.select_one('h2[class="original"]').get_text()
-
     title_translate = soup.select_one('h2[class="translate few"]').get_text()
 
     table = str(soup.select('#click_area'))
@@ -79,17 +81,21 @@ def extract_data(content):
         rows += [(original, translate)]
 
     print(f"Found: {title_original} / {title_translate} ")
+    
     return ( title_original, title_translate ), rows
 
 def save_to_csv(titles, rows):
     print("Exporting data...")
-
+    
     file_name = titles[0].replace(' ', '_') + '.csv'
+    
     with open(file_name, 'w', newline = '') as csv_file:
         csv_writer = csv.writer( csv_file, quoting=csv.QUOTE_NONNUMERIC )
+        
         csv_writer.writerow( ('Original', 'Translation') )
         csv_writer.writerow( titles )
         csv_writer.writerows( rows )
+        
     print(f"Data is successfuly exported to '{file_name}'")
     
 if __name__ == '__main__':
