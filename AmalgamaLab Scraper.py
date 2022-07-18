@@ -7,19 +7,9 @@ def main():
     url = get_url()
     page_html = get_html(url)
     title, text = extract_data(page_html)
-    print("Extracting data...")
-
-    csv_file = open( title[0]+'.csv', 'w', newline = '' )
-    csv_writer = csv.writer( csv_file )
-    csv_writer.writerow( [ 'Original', 'Translate' ] )
-    csv_writer.writerow( list(title) )
-
-    for _string in text:
-        original = _string.select_one('div[class="original"]').get_text()
-        translate = _string.select_one('div[class="translate"]').get_text()
-        csv_writer.writerow( list( ( original, translate ) ) )
+    save_to_csv(title, text)
+    
     print("Done!")
-    csv_file.close()
     sys.exit()
     
 '''
@@ -83,6 +73,20 @@ def extract_data(content):
 
     print(f"Found: {title_original} / {title_translate} ")
     return ( title_original, title_translate ), text
+
+def save_to_csv(title, text):
+    print("Exporting data...")
+
+    with open(title[0]+'.csv', 'w', newline = '') as csv_file:
+        csv_writer = csv.writer( csv_file )
+        csv_writer.writerow( [ 'Original', 'Translate' ] )
+        csv_writer.writerow( list(title) )
+
+        for _string in text:
+            original = _string.select_one('div[class="original"]').get_text()
+            translate = _string.select_one('div[class="translate"]').get_text()
+            csv_writer.writerow( list( ( original, translate ) ) )
+    print(f"Data is successfuly exported to ''{title[0]}.csv'")
     
 if __name__ == '__main__':
     main()
