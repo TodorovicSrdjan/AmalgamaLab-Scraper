@@ -1,30 +1,15 @@
-import requests, bs4, time, csv, re, sys
+import bs4, time, csv, re, sys, urllib3, ssl
 
 PROGRAM_NAME = "Amalgama-lab Scraper"
 
 def main():
     print_program_banner()
     url = get_url()
-
-    print("Sending request...")
-    try:
-        res = requests.request( 'GET', url )
-        
-    except:
-        print('Web site status: does not exist')
-
-
-
-    if res.status_code != requests.codes.ok:
-        print("Server response:", res.status_code )
-        print("Check if URL is valid and try again!")
-        main()
-    else:
-        print("Server response: OK")
+    page_html = get_html(url)
         
     print("Scraping data...")
 
-    soup = bs4.BeautifulSoup( res.text, features = "html.parser" )
+    soup = bs4.BeautifulSoup( page_html, features = "html.parser" )
     _title_original = soup.select_one('h2[class="original"]')
     title_original = _title_original.get_text()
 
@@ -81,6 +66,24 @@ def get_url():
             return result.group(0)
         else:
             print("Error: Invalid input!")
+            
+def get_html(url):
+    print("Sending request...")
+    
+    ctx = ssl.create_default_context()
+    ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+    http = urllib3.PoolManager(
+        ssl_version=ssl.PROTOCOL_TLS,
+        ssl_context=ctx)
+    response = http.request("GET", url)
+    
+    if response.status == 200:
+        print("Server response: OK")
+        return response.data
+    else:
+        print("Server response:", response.status )
+        print("Check if URL is valid and try again!")
+        main()
     
 if __name__ == '__main__':
     main()
