@@ -85,7 +85,7 @@ def save_to_csv(titles, rows):
     print("Exporting data...")
 
     with open(titles[0]+'.csv', 'w', newline = '') as csv_file:
-        csv_writer = csv.writer( csv_file )
+        csv_writer = csv.writer( csv_file, quoting=csv.QUOTE_NONNUMERIC )
         csv_writer.writerow( [ 'Original', 'Translated' ] )
         csv_writer.writerow( list(titles) )
         csv_writer.writerows( rows )
