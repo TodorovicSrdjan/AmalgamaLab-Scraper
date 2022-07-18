@@ -84,12 +84,13 @@ def extract_data(content):
 def save_to_csv(titles, rows):
     print("Exporting data...")
 
-    with open(titles[0]+'.csv', 'w', newline = '') as csv_file:
+    file_name = titles[0].replace(' ', '_') + '.csv'
+    with open(file_name, 'w', newline = '') as csv_file:
         csv_writer = csv.writer( csv_file, quoting=csv.QUOTE_NONNUMERIC )
         csv_writer.writerow( [ 'Original', 'Translated' ] )
         csv_writer.writerow( list(titles) )
         csv_writer.writerows( rows )
-    print(f"Data is successfuly exported to '{titles[0]}.csv'")
+    print(f"Data is successfuly exported to '{file_name}'")
     
 if __name__ == '__main__':
     main()
