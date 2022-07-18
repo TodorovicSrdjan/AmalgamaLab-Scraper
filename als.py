@@ -70,9 +70,16 @@ def extract_data(content):
     _text = str(soup.select('#click_area'))
     soup = bs4.BeautifulSoup( _text, features = "html.parser" )
     text = soup.select('.string_container')
+    
+    rows = []
+    
+    for _string in text:
+        original = _string.select_one('div[class="original"]').get_text()
+        translate = _string.select_one('div[class="translate"]').get_text()
+        rows += [(original, translate)]
 
     print(f"Found: {title_original} / {title_translate} ")
-    return ( title_original, title_translate ), text
+    return ( title_original, title_translate ), rows
 
 def save_to_csv(title, text):
     print("Exporting data...")
@@ -81,11 +88,7 @@ def save_to_csv(title, text):
         csv_writer = csv.writer( csv_file )
         csv_writer.writerow( [ 'Original', 'Translate' ] )
         csv_writer.writerow( list(title) )
-
-        for _string in text:
-            original = _string.select_one('div[class="original"]').get_text()
-            translate = _string.select_one('div[class="translate"]').get_text()
-            csv_writer.writerow( list( ( original, translate ) ) )
+        csv_writer.writerows( text )
     print(f"Data is successfuly exported to '{title[0]}.csv'")
     
 if __name__ == '__main__':
